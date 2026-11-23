@@ -1,0 +1,75 @@
+###############################################################		SECTION 1	###############################################################################
+[1] The first step in creating your own personal private cloud storage using NextCloud is to install it on the server using the following command:
+
+>>	sudo snap install nextcloud
+
+--> Configure nextcloud username and password:
+
+>>	sudo nextcloud.manual-install USERNAME PASSWORD
+
+--> Open the necessary ports in the ufw firewall:
+
+>>	sudo ufw allow 80,443/tcp
+
+--> Once this has completed, open your web browser and enter:
+
+>>	http://SERVER_IP-----------------------------(1)
+
+--> I assume the outcome obtained will be that of the image [3]. That Apache page means Apache is working, but your browser is reaching Apache’s default website instead of Nextcloud. This can be easily fixed by stopping and disabling Apache2:
+
+>>	sudo systemctl stop apache2
+
+>>	sudo systemctl disable apache2
+
+--> Once done, restart NextCloud:
+
+>>	sudo snap restart nextcloud
+
+--> Now, Nextcloud is available to the web browser, however, this introduces a new issue. In your web browser type the server IP address. The expected outcome is [1]. This can be fixed by:
+
+>>	sudo nextcloud.occ config:system:set trusted_domains 1 --value=SERVER_IP
+
+
+###############################################################		SECTION 2	###############################################################################
+
+[2] Next, install "Cockpit". Cockpit is a web-based server management tool that lets you control and monitor your Ubuntu server through a browser instead of only using the terminal.
+
+--> Once installed, Cockpit would allow the system's admin to monitor system performance, manage services, manage users and account, etc.
+
+>>	sudo apt install cockpit -y
+
+--> Once cockpit has successfully been installed, open the port used by the service in the ufw firewall.
+
+>>	sudo ufw allow 9090/tcp
+
+Afterwards, check if the cockpit services are up and running:
+
+>>	systemctl status cockpit
+
+If the services are not actively running and enabled, start and enable by using:
+
+>>	sudo systemctl start cockpit
+
+>>	sudo systemctl enable cockpit
+
+
+Finally, access the server on a web browser of your choice, and type the following:
+
+>>	http://SERVER_IP:9090
+
+This will open a webpage similar to [2]. To access your server via web browser, use your server username and password.
+
+
+###############################################################		SECTION 3	###############################################################################
+
+[3] To check available storage for NextCloud use the following:
+
+>>	sudo df -h /var/snap/nextcloud/common/nextcloud/data
+
+
+#######################################################################################################################################################################
+
+References:
+[1] "Access through untrusted domain".jpeg
+[2] "Cockpit login page".png
+[3] "Ubuntu Apache2 default-page".png
